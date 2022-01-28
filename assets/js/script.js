@@ -213,7 +213,49 @@ var deleteTask = function(taskId) {
 
 var saveTasks = function() {
   localStorage.setItem("tasks", JSON.stringify(tasks) );
-}
+};
+
+//Gets task items from localStorage.
+//Converts tasks from the string format back into an array of objects.
+//Iterates through a tasks array and creates task elements on the page from it.
+var loadTasks = function() {
+  tasks = localStorage.getItem("tasks");
+  if(tasks == null){
+    tasks = [];
+    return false;
+  }
+  tasks = JSON.parse(tasks);
+  for (let index = 0; index < tasks.length; index++) {
+    task[i].id = taskIdCounter;
+    var listItemEl = document.createElement("li");
+    listItemEl.className = "task-item";
+    listItemEl.setAttribute("data-task-id", task[i].id);
+
+    var taskInfoEl = document.createElement("div");
+    taskInfoEl.className = "task-info";
+    taskInfoEl.innerHTML =   taskInfoEl.innerHTML = "<h3 class='task-name'>" 
+                          + tasks[i].name + "</h3><span class='task-type'>" 
+                          + tasks[i].type + "</span>";
+    listItemEl.appendChild(taskInfoEl);
+
+    var taskActionsEl = createTaskActions(tasks[i].id);
+    listItemEl.appendChild(taskActionsEl);
+
+    if(tasks[i].status === 'to do') {
+      listItemEl.querySelector("select[name='status-change']").selectedIndex = 0;
+      tasksToDoEl.appendChild(listItemEl);
+    } else if (tasks[i].status === 'in progress') {
+      listItemEl.querySelector("select[name='status-change']").selectedIndex = 1;
+      tasksInProgressEl.appendChild(listItemEl);
+    } else if (tasks[i].status === 'complete') {
+      listItemEl.querySelector("select[name='status-change']").selectedIndex = 3;
+      tasksCompletedEl.appendChild(listItemEl);
+    }
+    
+    taskIdCounter++;
+  }
+  console.log(tasks);
+};
 
 // Create a new task
 formEl.addEventListener("submit", taskFormHandler);
@@ -221,3 +263,5 @@ formEl.addEventListener("submit", taskFormHandler);
 pageContentEl.addEventListener("click", taskButtonHandler);
 // for changing the status
 pageContentEl.addEventListener("change", taskStatusChangeHandler);
+
+loadTasks();
